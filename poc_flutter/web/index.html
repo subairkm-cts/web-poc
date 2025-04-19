@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Flutter App</title>
+</head>
+
+<body>
+  <div id="root"></div>
+  <script>
+
+    // JavaScript function for flutter to send data back to react
+    function sendToReact(data) {
+      // This function is called by Flutter
+      window.postMessage({ type: 'flutterToReact', payload: data }, '*');
+
+    }
+
+    // JavaScript function called by Flutter to trigger a React function
+    function callReactReceiveData(data) {
+      window.postMessage({ type: 'flutterToReact', payload: data }, '*');
+    }
+
+    // JavaScript function that Flutter can call to send data to Flutter
+    function receiveDataFromReact(data) {
+      console.log('Flutter2',data);
+      window.addEventListener('message', (event) => {
+        console.log('Flutter2',event);
+        if (event.data && event.data.type === 'reactToFlutter') {
+          console.log('React received from Flutter:', event.data.payload);
+          callback(event.data.payload);
+        }
+      });
+    }
+
+    // Expose the receiveDataFromReact function to the global scope
+    window.receiveDataFromReact = receiveDataFromReact;
+      window.sendToReact = sendToReact;
+      window.callReactReceiveData = callReactReceiveData;
+  </script>
+  <script src="main.dart.js" type="application/javascript"></script>
+  <script src="flutter.js" defer></script>
+</body>
+
+</html>
